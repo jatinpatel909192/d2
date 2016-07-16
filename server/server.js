@@ -3,7 +3,6 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
-import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 
 // Webpack Requirements
 import webpack from 'webpack';
@@ -32,7 +31,16 @@ import Helmet from 'react-helmet';
 // Import required modules
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
+import contents from './routes/content.routes';
+import contentTitles from './routes/contentTitle.routes';
+import layouts from './routes/layout.routes';
+import players from './routes/player.routes';
+import playerLogs from './routes/playerLog.routes';
+import playlists from './routes/playlist.routes';
+import playlistContents from './routes/playlistContent.routes';
 import posts from './routes/post.routes';
+import users from './routes/user.routes';
+import zones from './routes/zone.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
 
@@ -52,7 +60,16 @@ app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist')));
+app.use('/api/contents', contents);
+app.use('/api/contentTitles', contentTitles);
+app.use('/api/layouts', layouts);
+app.use('/api/players', players);
+app.use('/api/playerLogs', playerLogs);
+app.use('/api/playlists', playlists);
+app.use('/api/playlistContents', playlistContents);
 app.use('/api', posts);
+app.use('/api/users', users);
+app.use('/api/zones', zones);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -77,7 +94,7 @@ const renderFullPage = (html, initialState) => {
         <link rel="shortcut icon" href="http://res.cloudinary.com/hashnode/image/upload/v1455629445/static_imgs/mern/mern-favicon-circle-fill.png" type="image/png" />
       </head>
       <body>
-        <div id="root">${html}</div>
+        <div><div id="root"><div>${html}</div></div></div>
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
           ${process.env.NODE_ENV === 'production' ?
@@ -120,9 +137,7 @@ app.use((req, res, next) => {
       .then(() => {
         const initialView = renderToString(
           <Provider store={store}>
-            <IntlWrapper>
-              <RouterContext {...renderProps} />
-            </IntlWrapper>
+            <RouterContext {...renderProps} />
           </Provider>
         );
         const finalState = store.getState();

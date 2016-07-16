@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Import Style
 import styles from './App.css';
@@ -8,25 +10,30 @@ import styles from './App.css';
 import Helmet from 'react-helmet';
 import DevTools from './components/DevTools';
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 
 // Import Actions
-import { toggleAddPost } from './AppActions';
-import { switchLanguage } from '../../modules/Intl/IntlActions';
+import { toggleDrawer, logout } from './AppActions';
+
+// Import Selectors
+
+import { getAppDrawerOpen } from './AppReducer';
+
+injectTapEventPlugin();
+const muiTheme = getMuiTheme((null, { userAgent: 'all' }));
 
 export class App extends Component {
+
   constructor(props) {
     super(props);
     this.state = { isMounted: false };
+  }
+  getChildContext() {
+    return { muiTheme };
   }
 
   componentDidMount() {
     this.setState({isMounted: true}); // eslint-disable-line
   }
-
-  toggleAddPostSection = () => {
-    this.props.dispatch(toggleAddPost());
-  };
 
   render() {
     return (
@@ -34,8 +41,8 @@ export class App extends Component {
         {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
         <div>
           <Helmet
-            title="MERN Starter - Blog App"
-            titleTemplate="%s - Blog App"
+            title="Pursuit Digital Information Network."
+            titleTemplate="%s Digital Information Network."
             meta={[
               { charset: 'utf-8' },
               {
@@ -49,30 +56,34 @@ export class App extends Component {
             ]}
           />
           <Header
-            switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
-            intl={this.props.intl}
-            toggleAddPost={this.toggleAddPostSection}
+            appDrawerOpen={this.props.appDrawerOpen}
+            toggleDrawer={() => this.props.dispatch(toggleDrawer())}
+            overlayClose={() => this.props.dispatch(toggleDrawer())}
+            logout={() => this.props.dispatch(logout())}
           />
           <div className={styles.container}>
             {this.props.children}
           </div>
-          <Footer />
         </div>
       </div>
     );
   }
 }
 
+App.childContextTypes = {
+  muiTheme: PropTypes.object.isRequired,
+};
+
 App.propTypes = {
   children: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
+  appDrawerOpen: PropTypes.bool.isRequired,
 };
 
 // Retrieve data from store as props
 function mapStateToProps(store) {
   return {
-    intl: store.intl,
+    appDrawerOpen: getAppDrawerOpen(store),
   };
 }
 

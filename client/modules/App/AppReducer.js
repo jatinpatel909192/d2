@@ -1,18 +1,23 @@
 // Import Actions
-import { TOGGLE_ADD_POST } from './AppActions';
+import { TOGGLE_DRAWER, LOGOUT } from './AppActions';
 
 // Initial State
 const initialState = {
-  showAddPost: false,
+  login: false,
+  appDrawerOpen: false,
 };
 
 const AppReducer = (state = initialState, action) => {
   switch (action.type) {
-    case TOGGLE_ADD_POST:
+    case LOGOUT:
       return {
-        showAddPost: !state.showAddPost,
+        login: !state.login,
       };
-
+    case TOGGLE_DRAWER:
+      return {
+        ...state,
+        appDrawerOpen: !state.appDrawerOpen,
+      };
     default:
       return state;
   }
@@ -21,7 +26,8 @@ const AppReducer = (state = initialState, action) => {
 /* Selectors */
 
 // Get showAddPost
-export const getShowAddPost = state => state.app.showAddPost;
+export const getlogin = state => state.app.login;
+export const getAppDrawerOpen = state => state.app.appDrawerOpen;
 
 // Export Reducer
 export default AppReducer;

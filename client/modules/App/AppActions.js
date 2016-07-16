@@ -1,9 +1,16 @@
 // Export Constants
-export const TOGGLE_ADD_POST = 'TOGGLE_ADD_POST';
+export const LOGOUT = 'LOGOUT';
+export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
 
 // Export Actions
-export function toggleAddPost() {
+export function logout() {
   return {
-    type: TOGGLE_ADD_POST,
+    type: LOGOUT,
+  };
+}
+
+export function toggleDrawer() {
+  return {
+    type: TOGGLE_DRAWER,
   };
 }
